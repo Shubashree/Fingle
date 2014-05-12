@@ -84,7 +84,7 @@ public class MainActivity extends Activity {
                     }
                 }
             }
-        };
+        }; 
         mainThread.start();
     }
 
