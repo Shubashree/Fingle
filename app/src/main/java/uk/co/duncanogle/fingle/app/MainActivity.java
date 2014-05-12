@@ -12,7 +12,6 @@ import android.graphics.Paint;
 import android.graphics.Point;
 import android.os.Bundle;
 import android.os.Handler;
-import android.util.Log;
 import android.view.Display;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -23,9 +22,6 @@ import android.widget.Toast;
 
 import java.util.Random;
 
-/**
- * Created by Duncan on 11/05/2014.
- */
 public class MainActivity extends Activity {
     Context self = this;
     private Handler handler;
@@ -80,11 +76,12 @@ public class MainActivity extends Activity {
                             wait();
                         } catch (InterruptedException e) {
                             e.printStackTrace();
+                            // Comment
                         }
                     }
                 }
             }
-        }; 
+        };
         mainThread.start();
     }
 
@@ -160,7 +157,7 @@ public class MainActivity extends Activity {
                 case MotionEvent.ACTION_DOWN:
                     if (alertDialog == null) {
                         go();
-                    } else if (alertDialog.isShowing() == false) {
+                    } else if (!alertDialog.isShowing()) {
                         go();
                     }
                     return true;
@@ -177,7 +174,7 @@ public class MainActivity extends Activity {
                 case MotionEvent.ACTION_MOVE:
                     if (alertDialog == null) {
                         go();
-                    } else if (alertDialog.isShowing() == false) {
+                    } else if (!alertDialog.isShowing()) {
                         if (!checkBounds(e.getX(), e.getY())) {
                             pause();
                             saveHighScore();
@@ -198,7 +195,7 @@ public class MainActivity extends Activity {
                         "You scored " + getScore() + ". \n" +
                         "Your high score is " + getHighScore());
                 reset();
-            } else if (alertDialog.isShowing() == false) {
+            } else if (!alertDialog.isShowing()) {
                 pause();
                 saveHighScore();
                 dialog("You can only use 1 finger at a time! \n" +
@@ -238,7 +235,7 @@ public class MainActivity extends Activity {
         if (alertDialog == null) {
             alertDialog = new AlertDialog.Builder(this).create();
         }
-        if (alertDialog.isShowing() == false) {
+        if (!alertDialog.isShowing()) {
             alertDialog.setTitle(R.string.oops);
             alertDialog.setMessage(s);
             alertDialog.setButton(getResources().getText(R.string.okay), new DialogInterface.OnClickListener() {
@@ -273,8 +270,7 @@ public class MainActivity extends Activity {
 
     private int getHighScore() {
         SharedPreferences sharedPref = getApplicationContext().getSharedPreferences("MyPref", 0);
-        int x = sharedPref.getInt("hs", -2);
-        return x;
+        return sharedPref.getInt("hs", -2);
     }
 
     private boolean checkBounds(float x, float y) {
