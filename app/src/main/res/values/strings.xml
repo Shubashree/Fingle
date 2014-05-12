@@ -4,5 +4,12 @@
     <string name="app_name">Fingle</string>
     <string name="hello_world">Hello world!</string>
     <string name="action_settings">Settings</string>
+    <string name="startGame">Start Game</string>
+    <string name="high_score">High Score: </string>
+    <string name="get_score">Whats my high score?</string>
+    <string name="reset_score">Reset high score</string>
+
+    <string name="oops">Oops!</string>
+    <string name="okay">Okay</string>
 
 </resources>

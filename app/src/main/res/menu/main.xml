@@ -1,9 +1,13 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    tools:context="com.example.fingle.app.MainActivity" >
-    <item android:id="@+id/action_settings"
-        android:title="@string/action_settings"
+    tools:context="uk.co.duncanogle.fingle.app.MainActivity" >
+    <item android:id="@+id/action_get_score"
+    android:title="@string/get_score"
+    android:orderInCategory="100"
+    app:showAsAction="never" />
+    <item android:id="@+id/action_reset_score"
+        android:title="@string/reset_score"
         android:orderInCategory="100"
         app:showAsAction="never" />
 </menu>
