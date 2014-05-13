@@ -235,12 +235,6 @@ public class MainActivity extends Activity {
         if (!alertDialog.isShowing()) {
             alertDialog.setTitle(R.string.oops);
             alertDialog.setMessage(s);
-            //noinspection deprecation
-            alertDialog.setButton(getResources().getText(R.string.okay), new DialogInterface.OnClickListener() {
-                public void onClick(DialogInterface dialog, int which) {
-// here you can add functions
-                }
-            });
             alertDialog.show();
         }
     }
@@ -278,6 +272,20 @@ public class MainActivity extends Activity {
             }
         }
         return result;
+    }
+
+    @Override
+    public void onWindowFocusChanged(boolean hasFocus) {
+        super.onWindowFocusChanged(hasFocus);
+        if (hasFocus) {
+            gameView.setSystemUiVisibility(
+                    View.SYSTEM_UI_FLAG_LAYOUT_STABLE
+                            | View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION
+                            | View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
+                            | View.SYSTEM_UI_FLAG_HIDE_NAVIGATION
+                            | View.SYSTEM_UI_FLAG_FULLSCREEN
+                            | View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY
+            );}
     }
 
     /**
