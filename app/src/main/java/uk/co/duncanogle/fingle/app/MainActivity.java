@@ -39,11 +39,11 @@ public class MainActivity extends Activity {
         gameView = new GameView(self);
         setContentView(gameView);
         handler = new Handler();
+        alertDialog = new AlertDialog.Builder(this).create();
         addCenterCircle();
         mainThread = new Thread() {
             public void run() {
                 int countr = 0;
-
                 //noinspection InfiniteLoopStatement
                 while (true) {
                     if (!paused) {
@@ -95,13 +95,7 @@ public class MainActivity extends Activity {
 
         int Radius = r.nextInt(600 - 200) + 200;
 
-        String Col[] = {
-                "#2A80B9",
-                "#2C3E50",
-                "#1ABC9C",
-                "#E0293F",
-                "#1ABC14",
-                "#FFFC14"};
+        String Col[] = {"#2A80B9", "#2C3E50", "#1ABC9C", "#E0293F", "#1ABC14", "#FFFC14"};
 
         String Clr = Col[r.nextInt(6)];
 
@@ -121,13 +115,7 @@ public class MainActivity extends Activity {
 
         Random r = new Random();
 
-        String Col[] = {
-                "#2A80B9",
-                "#2C3E50",
-                "#1ABC9C",
-                "#E0293F",
-                "#1ABC14",
-                "#FFFC14"};
+        String Col[] = {"#2A80B9", "#2C3E50", "#1ABC9C", "#E0293F", "#1ABC14", "#FFFC14"};
 
         String Clr = Col[r.nextInt(6)];
 
@@ -150,10 +138,16 @@ public class MainActivity extends Activity {
         if (e.getPointerCount() == 1) {
             switch (e.getActionMasked()) {
                 case MotionEvent.ACTION_DOWN:
-                    if (alertDialog == null) {
+                    if (!alertDialog.isShowing()) {
                         go();
-                    } else if (!alertDialog.isShowing()) {
-                        go();
+                        if (!checkBounds(e.getX(), e.getY())) {
+                            pause();
+                            saveHighScore();
+                            dialog("You moved outside a circle! \n" +
+                                    "You scored " + getScore() + ". \n" +
+                                    "Your high score is " + getHighScore());
+                            reset();
+                        }
                     }
                     return true;
 
@@ -167,9 +161,7 @@ public class MainActivity extends Activity {
                     return true;
 
                 case MotionEvent.ACTION_MOVE:
-                    if (alertDialog == null) {
-                        go();
-                    } else if (!alertDialog.isShowing()) {
+                    if (!alertDialog.isShowing()) {
                         if (!checkBounds(e.getX(), e.getY())) {
                             pause();
                             saveHighScore();
@@ -183,14 +175,7 @@ public class MainActivity extends Activity {
                     return true;
             }
         } else {
-            if (alertDialog == null) {
-                pause();
-                saveHighScore();
-                dialog("You can only use 1 finger at a time! \n" +
-                        "You scored " + getScore() + ". \n" +
-                        "Your high score is " + getHighScore());
-                reset();
-            } else if (!alertDialog.isShowing()) {
+            if (!alertDialog.isShowing()) {
                 pause();
                 saveHighScore();
                 dialog("You can only use 1 finger at a time! \n" +
@@ -228,9 +213,6 @@ public class MainActivity extends Activity {
     }
 
     private void dialog(String s) {
-        if (alertDialog == null) {
-            alertDialog = new AlertDialog.Builder(this).create();
-        }
         if (!alertDialog.isShowing()) {
             alertDialog.setTitle(R.string.oops);
             alertDialog.setMessage(s);
