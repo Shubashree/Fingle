@@ -18,20 +18,18 @@ import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.Window;
-import android.widget.Toast;
 
 import java.util.Random;
 
 public class MainActivity extends Activity {
     Context self = this;
     private Handler handler;
-    // private ArrayList<Circle> circles = new ArrayList<Circle>();
     private Circle circles2[] = new Circle[10];
     int counter = 0;
     int ccontr = 0;
     private GameView gameView;
     static volatile boolean paused;
-    static AlertDialog alertDialog = null; //new AlertDialog.Builder(this).create();
+    static AlertDialog alertDialog = null;
     Thread mainThread;
 
     public void onCreate(Bundle savedInstanceState) {
@@ -43,12 +41,12 @@ public class MainActivity extends Activity {
         setContentView(gameView);
         handler = new Handler();
         addCenterCircle();
-        mainThread = new Thread() {public void run() {
-//            public void run() {
+        mainThread = new Thread() {
+            public void run() {
                 int countr = 0;
 
+                //noinspection InfiniteLoopStatement
                 while (true) {
-
                     if (!paused) {
                         try {
                             Thread.sleep(10);
@@ -69,14 +67,12 @@ public class MainActivity extends Activity {
                                 }
                             });
                         }
-                    }
-                    else synchronized (this) {
+                    } else synchronized (this) {
                         try {
                             paused = false;
                             wait();
                         } catch (InterruptedException e) {
                             e.printStackTrace();
-                            // Comment
                         }
                     }
                 }
@@ -206,7 +202,7 @@ public class MainActivity extends Activity {
 
         }
 
-        return true;
+        return checkBounds(e.getX(), e.getY());
     }
 
     private synchronized void pause() {
@@ -214,10 +210,11 @@ public class MainActivity extends Activity {
     }
 
     private synchronized void go() {
-//        if(mainThread.getState() == Thread.State.WAITING) {
-            paused = false;
-        synchronized(mainThread) { mainThread.notify(); }
-//        }
+        paused = false;
+        //noinspection SynchronizeOnNonFinalField
+        synchronized (mainThread) {
+            mainThread.notify();
+        }
     }
 
     private void reset() {
@@ -238,6 +235,7 @@ public class MainActivity extends Activity {
         if (!alertDialog.isShowing()) {
             alertDialog.setTitle(R.string.oops);
             alertDialog.setMessage(s);
+            //noinspection deprecation
             alertDialog.setButton(getResources().getText(R.string.okay), new DialogInterface.OnClickListener() {
                 public void onClick(DialogInterface dialog, int which) {
 // here you can add functions
@@ -245,11 +243,6 @@ public class MainActivity extends Activity {
             });
             alertDialog.show();
         }
-    }
-
-    private void toast(String s) {
-        Toast toast = Toast.makeText(getApplicationContext(), s, Toast.LENGTH_SHORT);
-        toast.show();
     }
 
     private void saveHighScore() {
