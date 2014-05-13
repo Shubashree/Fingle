@@ -41,6 +41,7 @@ public class MainActivity extends Activity {
         handler = new Handler();
         alertDialog = new AlertDialog.Builder(this).create();
         addCenterCircle();
+        dialog("Lets go!", "Keep your finger pressed on the circle for as long as possible!");
         mainThread = new Thread() {
             public void run() {
                 int countr = 0;
@@ -143,7 +144,7 @@ public class MainActivity extends Activity {
                         if (!checkBounds(e.getX(), e.getY())) {
                             pause();
                             saveHighScore();
-                            dialog("You moved outside a circle! \n" +
+                            dialog("Oops!", "You moved outside a circle! \n" +
                                     "You scored " + getScore() + ". \n" +
                                     "Your high score is " + getHighScore());
                             reset();
@@ -154,7 +155,7 @@ public class MainActivity extends Activity {
                 case MotionEvent.ACTION_UP:
                     pause();
                     saveHighScore();
-                    dialog("You lifted your finger from the screen! \n" +
+                    dialog("Oops!", "You lifted your finger from the screen! \n" +
                             "You scored " + getScore() + ". \n" +
                             "Your highscore is " + getHighScore());
                     reset();
@@ -165,7 +166,7 @@ public class MainActivity extends Activity {
                         if (!checkBounds(e.getX(), e.getY())) {
                             pause();
                             saveHighScore();
-                            dialog("You moved outside a circle! \n" +
+                            dialog("Oops!", "You moved outside a circle! \n" +
                                     "You scored " + getScore() + ". \n" +
                                     "Your high score is " + getHighScore());
                             reset();
@@ -178,7 +179,7 @@ public class MainActivity extends Activity {
             if (!alertDialog.isShowing()) {
                 pause();
                 saveHighScore();
-                dialog("You can only use 1 finger at a time! \n" +
+                dialog("Oops!", "You can only use 1 finger at a time! \n" +
                         "You scored " + getScore() + ". \n" +
                         "Your high score is " + getHighScore());
                 reset();
@@ -212,10 +213,10 @@ public class MainActivity extends Activity {
         return counter * ccontr;
     }
 
-    private void dialog(String s) {
+    private void dialog(String s1, String s2) {
         if (!alertDialog.isShowing()) {
-            alertDialog.setTitle(R.string.oops);
-            alertDialog.setMessage(s);
+            alertDialog.setTitle(s1);
+            alertDialog.setMessage(s2);
             alertDialog.show();
         }
     }
@@ -290,11 +291,11 @@ public class MainActivity extends Activity {
     public boolean onOptionsItemSelected(MenuItem item) {
         int id = item.getItemId();
         if (id == R.id.action_get_score) {
-            dialog(String.valueOf(getHighScore()));
+            dialog("Your high score", String.valueOf(getHighScore()));
             return true;
         }
         if (id == R.id.action_reset_score) {
-            dialog("Score Reset");
+            dialog("Score reset", "Looks like you're back to 0!");
             resetHighScore();
             return true;
         }
