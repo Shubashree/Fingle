@@ -26,21 +26,24 @@ public class MainActivity extends Activity {
     private Circle circles2[] = new Circle[10];
     int counter = 0;
     int ccontr = 0;
+    float fingerX = 0;
+    float fingerY = 0;
     private GameView gameView;
     static volatile boolean paused;
     static AlertDialog alertDialog = null;
     Thread mainThread;
+    SharedPreferences sharedPref;
 
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         requestWindowFeature(Window.FEATURE_NO_TITLE);
-
+        sharedPref = getApplicationContext().getSharedPreferences("MyPref", 0);
         paused = true;
         gameView = new GameView(self);
         setContentView(gameView);
         handler = new Handler();
         alertDialog = new AlertDialog.Builder(this).create();
-        addCenterCircle();
+        addCircle(true);
         dialog("Lets go!", "Keep your finger pressed on the circle for as long as possible!");
         mainThread = new Thread() {
             public void run() {
@@ -63,7 +66,7 @@ public class MainActivity extends Activity {
                         if (countr % 2000 == 0) {
                             handler.post(new Runnable() {
                                 public void run() {
-                                    addCircle();
+                                    addCircle(false);
                                 }
                             });
                         }
@@ -81,7 +84,7 @@ public class MainActivity extends Activity {
         mainThread.start();
     }
 
-    private void addCircle() {
+    private void addCircle(boolean center) {
         Display display = getWindowManager().getDefaultDisplay();
         Point size = new Point();
         display.getSize(size);
@@ -96,6 +99,12 @@ public class MainActivity extends Activity {
 
         int Radius = r.nextInt(600 - 200) + 200;
 
+        if(center) {
+            RX = HighX/2;
+            RY = HighY/2;
+            Radius = 200;
+        }
+
         String Col[] = {"#2A80B9", "#2C3E50", "#1ABC9C", "#E0293F", "#1ABC14", "#FFFC14"};
 
         String Clr = Col[r.nextInt(6)];
@@ -106,25 +115,6 @@ public class MainActivity extends Activity {
         gameView.invalidate();
     }
 
-    private void addCenterCircle() {
-        Display display = getWindowManager().getDefaultDisplay();
-        Point size = new Point();
-        display.getSize(size);
-
-        int HighX = size.x;
-        int HighY = size.y;
-
-        Random r = new Random();
-
-        String Col[] = {"#2A80B9", "#2C3E50", "#1ABC9C", "#E0293F", "#1ABC14", "#FFFC14"};
-
-        String Clr = Col[r.nextInt(6)];
-
-        circles2[counter % 10] = new Circle(HighX / 2, HighY / 2, 400, Clr);
-        counter++;
-
-        gameView.invalidate();
-    }
 
     private void shrinkCircles() {
         for (int i = 0; i < 10; i++) {
@@ -136,6 +126,8 @@ public class MainActivity extends Activity {
     }
 
     public boolean onTouchEvent(MotionEvent e) {
+        fingerX = e.getX();
+        fingerY = e.getY();
         if (e.getPointerCount() == 1) {
             switch (e.getActionMasked()) {
                 case MotionEvent.ACTION_DOWN:
@@ -206,7 +198,7 @@ public class MainActivity extends Activity {
         counter = 0;
         ccontr = 0;
         circles2 = new Circle[10];
-        addCenterCircle();
+        addCircle(true);
     }
 
     private int getScore() {
@@ -223,7 +215,6 @@ public class MainActivity extends Activity {
 
     private void saveHighScore() {
         if (counter * ccontr > getHighScore()) {
-            SharedPreferences sharedPref = getApplicationContext().getSharedPreferences("MyPref", 0);
             SharedPreferences.Editor editor = sharedPref.edit();
             editor.putInt("hs", counter * ccontr);
             editor.commit();
@@ -231,14 +222,12 @@ public class MainActivity extends Activity {
     }
 
     private void resetHighScore() {
-        SharedPreferences sharedPref = getApplicationContext().getSharedPreferences("MyPref", 0);
         SharedPreferences.Editor editor = sharedPref.edit();
         editor.putInt("hs", 0);
         editor.commit();
     }
 
     private int getHighScore() {
-        SharedPreferences sharedPref = getApplicationContext().getSharedPreferences("MyPref", 0);
         return sharedPref.getInt("hs", -2);
     }
 
@@ -256,9 +245,7 @@ public class MainActivity extends Activity {
         return result;
     }
 
-    /**
-     * Game View Class
-     */
+    // GAME VIEW CLASS
     class GameView extends View {
         Paint paint = new Paint();
 
@@ -297,6 +284,15 @@ public class MainActivity extends Activity {
         if (id == R.id.action_reset_score) {
             dialog("Score reset", "Looks like you're back to 0!");
             resetHighScore();
+            return true;
+        }
+        if (id == R.id.action_show_about) {
+            dialog("Fingle - Thanks for playing!",
+                    "Fingle is a game where circles of decreasing size are drawn on the " +
+                            "screen and with one finger pressed on the screen you must stay on these " +
+                            "circles. If you come off the circles, try using more than one finger, " +
+                            "or take your finger off the screen, you lose." +
+                            "\nThis app was made for part of my university degree. I hope you enjoy it!");
             return true;
         }
         return super.onOptionsItemSelected(item);
