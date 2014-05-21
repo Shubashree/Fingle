@@ -1,13 +1,20 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    tools:context="uk.co.duncanogle.fingle.app.MainActivity" >
-    <item android:id="@+id/action_get_score"
-    android:title="@string/get_score"
-    android:orderInCategory="100"
-    app:showAsAction="never" />
-    <item android:id="@+id/action_reset_score"
-        android:title="@string/reset_score"
+    tools:context="uk.co.duncanogle.fingle.app.MainActivity">
+    <item
+        android:id="@+id/action_get_score"
         android:orderInCategory="100"
+        android:title="@string/get_score"
+        app:showAsAction="never" />
+    <item
+        android:id="@+id/action_reset_score"
+        android:orderInCategory="100"
+        android:title="@string/reset_score"
+        app:showAsAction="never" />
+    <item
+        android:id="@+id/action_show_about"
+        android:orderInCategory="100"
+        android:title="@string/about"
         app:showAsAction="never" />
 </menu>

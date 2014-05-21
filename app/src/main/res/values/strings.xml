@@ -8,6 +8,7 @@
     <string name="high_score">High Score: </string>
     <string name="get_score">Whats my high score?</string>
     <string name="reset_score">Reset high score</string>
+    <string name="about">About</string>
 
     <string name="oops">Oops!</string>
     <string name="okay">Okay</string>
