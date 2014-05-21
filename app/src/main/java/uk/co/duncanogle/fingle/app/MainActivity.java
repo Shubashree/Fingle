@@ -23,9 +23,9 @@ import java.util.Random;
 public class MainActivity extends Activity {
     Context self = this;
     private Handler handler;
-    private Circle circles2[] = new Circle[10];
-    int counter = 0;
-    int ccontr = 0;
+    private Circle circlesArray[] = new Circle[10];
+    int numberOfCirclesGenerated = 0;
+    int threadCounter = 0;
     float fingerX = 0;
     float fingerY = 0;
     private GameView gameView;
@@ -47,14 +47,11 @@ public class MainActivity extends Activity {
         dialog("Lets go!", "Keep your finger pressed on the circle for as long as possible!");
         mainThread = new Thread() {
             public void run() {
-                int countr = 0;
-                //noinspection InfiniteLoopStatement
                 while (true) {
                     if (!paused) {
                         try {
                             Thread.sleep(10);
-                            countr += 20;
-                            ccontr += 20;
+                            threadCounter += 20;
                         } catch (InterruptedException e) {
                             e.printStackTrace();
                         }
@@ -63,7 +60,7 @@ public class MainActivity extends Activity {
                                 shrinkCircles();
                             }
                         });
-                        if (countr % 2000 == 0) {
+                        if (threadCounter % 2000 == 0) {
                             handler.post(new Runnable() {
                                 public void run() {
                                     addCircle(false);
@@ -102,15 +99,15 @@ public class MainActivity extends Activity {
         if(center) {
             RX = HighX/2;
             RY = HighY/2;
-            Radius = 200;
+            Radius = 400;
         }
 
         String Col[] = {"#2A80B9", "#2C3E50", "#1ABC9C", "#E0293F", "#1ABC14", "#FFFC14"};
 
         String Clr = Col[r.nextInt(6)];
 
-        circles2[counter % 10] = new Circle(RX, RY, Radius, Clr);
-        counter++;
+        circlesArray[numberOfCirclesGenerated % 10] = new Circle(RX, RY, Radius, Clr);
+        numberOfCirclesGenerated++;
 
         gameView.invalidate();
     }
@@ -118,8 +115,8 @@ public class MainActivity extends Activity {
 
     private void shrinkCircles() {
         for (int i = 0; i < 10; i++) {
-            if (circles2[i] != null) {
-                circles2[i].subRadius(1);
+            if (circlesArray[i] != null) {
+                circlesArray[i].subRadius(1);
             }
         }
         gameView.invalidate();
@@ -188,21 +185,20 @@ public class MainActivity extends Activity {
 
     private synchronized void go() {
         paused = false;
-        //noinspection SynchronizeOnNonFinalField
         synchronized (mainThread) {
             mainThread.notify();
         }
     }
 
     private void reset() {
-        counter = 0;
-        ccontr = 0;
-        circles2 = new Circle[10];
+        numberOfCirclesGenerated = 0;
+        threadCounter = 0;
+        circlesArray = new Circle[10];
         addCircle(true);
     }
 
     private int getScore() {
-        return counter * ccontr;
+        return numberOfCirclesGenerated * threadCounter;
     }
 
     private void dialog(String s1, String s2) {
@@ -214,29 +210,29 @@ public class MainActivity extends Activity {
     }
 
     private void saveHighScore() {
-        if (counter * ccontr > getHighScore()) {
+        if (numberOfCirclesGenerated * threadCounter > getHighScore()) {
             SharedPreferences.Editor editor = sharedPref.edit();
-            editor.putInt("hs", counter * ccontr);
+            editor.putInt("highScore", numberOfCirclesGenerated * threadCounter);
             editor.commit();
         }
     }
 
     private void resetHighScore() {
         SharedPreferences.Editor editor = sharedPref.edit();
-        editor.putInt("hs", 0);
+        editor.putInt("highScore", 0);
         editor.commit();
     }
 
     private int getHighScore() {
-        return sharedPref.getInt("hs", -2);
+        return sharedPref.getInt("highScore", -2);
     }
 
     private boolean checkBounds(float x, float y) {
         boolean result = false;
 
         for (int i = 0; i < 10; i++) {
-            if (circles2[i] != null) {
-                if ((Math.pow(x - circles2[i].x, 2) + Math.pow(y - circles2[i].y, 2)) < Math.pow(circles2[i].radius, 2)) {
+            if (circlesArray[i] != null) {
+                if ((Math.pow(x - circlesArray[i].x, 2) + Math.pow(y - circlesArray[i].y, 2)) < Math.pow(circlesArray[i].radius, 2)) {
                     result = true;
                     break;
                 }
@@ -259,10 +255,9 @@ public class MainActivity extends Activity {
             paint.setAntiAlias(true);
             canvas.drawPaint(paint);
 
-
             for (int i = 0; i < 10; i++) {
-                if (circles2[i] != null) {
-                    canvas.drawCircle(circles2[i].x, circles2[i].y, circles2[i].radius, circles2[i].paint);
+                if (circlesArray[i] != null) {
+                    canvas.drawCircle(circlesArray[i].x, circlesArray[i].y, circlesArray[i].radius, circlesArray[i].paint);
                 }
             }
         }
