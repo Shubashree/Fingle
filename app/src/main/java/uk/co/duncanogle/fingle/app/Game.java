@@ -200,7 +200,7 @@ public class Game extends Activity {
 //                    else {
 //                        view.setText("false");
 //                    }
-                    if(!checkBounds(e.getX(), e.getY())) {
+                    if (!checkBounds(e.getX(), e.getY())) {
                         paused = false;
                         saveHighScore();
                         dialog("You moved outside a circle! \n" +
@@ -286,7 +286,7 @@ public class Game extends Activity {
 
         for (int i = 0; i < 10; i++) {
             if (circles2[i] != null) {
-                if((Math.pow(x - circles2[i].x, 2) + Math.pow(y - circles2[i].y, 2)) < Math.pow(circles2[i].radius, 2)) {
+                if ((Math.pow(x - circles2[i].x, 2) + Math.pow(y - circles2[i].y, 2)) < Math.pow(circles2[i].radius, 2)) {
                     result = true;
                     break;
                 }
@@ -336,7 +336,7 @@ public class Game extends Activity {
             dialog(String.valueOf(getHighScore()));
             return true;
         }
-        if(id == R.id.action_reset_score) {
+        if (id == R.id.action_reset_score) {
             dialog("Score Reset");
             resetHighScore();
             return true;
