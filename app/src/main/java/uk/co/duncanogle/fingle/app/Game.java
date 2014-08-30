@@ -18,13 +18,10 @@ import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.Window;
-import android.widget.Toast;
 
 import java.util.Random;
 
-/**
- * Created by Duncan on 11/05/2014.
- */
+
 public class Game extends Activity {
     Context self = this;
     private Handler handler;
@@ -239,12 +236,12 @@ public class Game extends Activity {
         if (alertDialog == null) {
             alertDialog = new AlertDialog.Builder(this).create();
         }
-        if (alertDialog.isShowing() == false) {
+        if (!alertDialog.isShowing()) {
             alertDialog.setTitle("Oops!");
             alertDialog.setMessage(s);
             alertDialog.setButton("OK", new DialogInterface.OnClickListener() {
                 public void onClick(DialogInterface dialog, int which) {
-// here you can add functions
+                    // here you can add functions
                 }
             });
             alertDialog.show();
@@ -252,10 +249,10 @@ public class Game extends Activity {
 //        toast(String.valueOf(alertDialog.isShowing()));
     }
 
-    private void toast(String s) {
-        Toast toast = Toast.makeText(getApplicationContext(), s, Toast.LENGTH_SHORT);
-        toast.show();
-    }
+//    private void toast(String s) {
+//        Toast toast = Toast.makeText(getApplicationContext(), s, Toast.LENGTH_SHORT);
+//        toast.show();
+//    }
 
     private void saveHighScore() {
         if (counter * ccontr > getHighScore()) {
@@ -275,8 +272,8 @@ public class Game extends Activity {
 
     private int getHighScore() {
         SharedPreferences sharedPref = getApplicationContext().getSharedPreferences("MyPref", 0);
-        int x = sharedPref.getInt("hs", -2);
-        return x;
+        return sharedPref.getInt("hs", -2);
+//        return x;
     }
 
     private boolean checkBounds(float x, float y) {
