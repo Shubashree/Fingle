@@ -4,6 +4,7 @@ package uk.co.duncanogle.fingle.app;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.SharedPreferences;
 import android.graphics.Canvas;
 import android.graphics.Color;
@@ -30,7 +31,8 @@ public class MainActivity extends Activity {
     float fingerY = 0;
     private GameView gameView;
     static volatile boolean paused;
-    static AlertDialog alertDialog = null;
+    //    static AlertDialog alertDialog = null;
+    static AlertDialog.Builder alert = null; //new AlertDialog.Builder(this).create();
     Thread mainThread;
     SharedPreferences sharedPref;
 
@@ -42,7 +44,7 @@ public class MainActivity extends Activity {
         gameView = new GameView(self);
         setContentView(gameView);
         handler = new Handler();
-        alertDialog = new AlertDialog.Builder(this).create();
+        //alert = new AlertDialog.Builder(this).create();
         addCircle(true);
         dialog("Lets go!", "Keep your finger pressed on the circle for as long as possible!");
         mainThread = new Thread() {
@@ -96,9 +98,9 @@ public class MainActivity extends Activity {
 
         int Radius = r.nextInt(600 - 200) + 200;
 
-        if(center) {
-            RX = HighX/2;
-            RY = HighY/2;
+        if (center) {
+            RX = HighX / 2;
+            RY = HighY / 2;
             Radius = 400;
         }
 
@@ -128,7 +130,7 @@ public class MainActivity extends Activity {
         if (e.getPointerCount() == 1) {
             switch (e.getActionMasked()) {
                 case MotionEvent.ACTION_DOWN:
-                    if (!alertDialog.isShowing()) {
+                    if (alert == null) {
                         go();
                         if (!checkBounds(e.getX(), e.getY())) {
                             pause();
@@ -151,7 +153,7 @@ public class MainActivity extends Activity {
                     return true;
 
                 case MotionEvent.ACTION_MOVE:
-                    if (!alertDialog.isShowing()) {
+                    if (alert == null) {
                         if (!checkBounds(e.getX(), e.getY())) {
                             pause();
                             saveHighScore();
@@ -165,7 +167,7 @@ public class MainActivity extends Activity {
                     return true;
             }
         } else {
-            if (!alertDialog.isShowing()) {
+            if (alert == null) {
                 pause();
                 saveHighScore();
                 dialog("Oops!", "You can only use 1 finger at a time! \n" +
@@ -202,10 +204,19 @@ public class MainActivity extends Activity {
     }
 
     private void dialog(String s1, String s2) {
-        if (!alertDialog.isShowing()) {
-            alertDialog.setTitle(s1);
-            alertDialog.setMessage(s2);
-            alertDialog.show();
+        if (alert == null) {
+            alert = new AlertDialog.Builder(this);
+            alert.setTitle(s1);
+//            alert.setMessage(s2);
+            alert.setMessage(s2);
+            alert.setPositiveButton("Ok", new DialogInterface.OnClickListener() {
+                public void onClick(DialogInterface dialog, int whichButton) {
+                    //Your action here
+                    alert = null;
+                    dialog.dismiss();
+                }
+            });
+            alert.show();
         }
     }
 

@@ -21,7 +21,6 @@ import android.view.Window;
 
 import java.util.Random;
 
-
 public class Game extends Activity {
     Context self = this;
     private Handler handler;
@@ -31,7 +30,7 @@ public class Game extends Activity {
     int ccontr = 0;
     private GameView gameView;
     static volatile boolean paused;
-    static AlertDialog alertDialog = null; //new AlertDialog.Builder(this).create();
+    static AlertDialog.Builder alert = null; //new AlertDialog.Builder(this).create();
 
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -233,18 +232,27 @@ public class Game extends Activity {
     }
 
     private void dialog(String s) {
-        if (alertDialog == null) {
-            alertDialog = new AlertDialog.Builder(this).create();
-        }
-        if (!alertDialog.isShowing()) {
-            alertDialog.setTitle("Oops!");
-            alertDialog.setMessage(s);
-            alertDialog.setButton("OK", new DialogInterface.OnClickListener() {
-                public void onClick(DialogInterface dialog, int which) {
-                    // here you can add functions
+        if (alert == null) {
+//            alert = new AlertDialog.Builder(this).create();
+            alert = new AlertDialog.Builder(this);
+//        }
+//        if (!alert.isShowing()) {
+            alert.setTitle("Oops!");
+            alert.setMessage(s);
+            alert.setPositiveButton("Ok", new DialogInterface.OnClickListener() {
+                public void onClick(DialogInterface dialog, int whichButton) {
+                    //Your action here
+                    alert = null;
+                    dialog.dismiss();
                 }
             });
-            alertDialog.show();
+//            alert.setButton("Ok");
+//            alert.setButton("OK", new DialogInterface.OnClickListener() {
+//                public void onClick(DialogInterface dialog, int which) {
+//                    // here you can add functions
+//                }
+//            });
+            alert.show();
         }
 //        toast(String.valueOf(alertDialog.isShowing()));
     }
