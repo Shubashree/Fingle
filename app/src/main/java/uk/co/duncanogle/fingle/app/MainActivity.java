@@ -207,11 +207,9 @@ public class MainActivity extends Activity {
         if (alert == null) {
             alert = new AlertDialog.Builder(this);
             alert.setTitle(s1);
-//            alert.setMessage(s2);
             alert.setMessage(s2);
             alert.setPositiveButton("Ok", new DialogInterface.OnClickListener() {
                 public void onClick(DialogInterface dialog, int whichButton) {
-                    //Your action here
                     alert = null;
                     dialog.dismiss();
                 }
@@ -224,14 +222,14 @@ public class MainActivity extends Activity {
         if (numberOfCirclesGenerated * threadCounter > getHighScore()) {
             SharedPreferences.Editor editor = sharedPref.edit();
             editor.putInt("highScore", numberOfCirclesGenerated * threadCounter);
-            editor.commit();
+            editor.apply();
         }
     }
 
     private void resetHighScore() {
         SharedPreferences.Editor editor = sharedPref.edit();
         editor.putInt("highScore", 0);
-        editor.commit();
+        editor.apply();
     }
 
     private int getHighScore() {
